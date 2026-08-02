@@ -20,3 +20,8 @@ if(!result.success) {
     console.log(result.data);
 } */
 
+export const redirectParamsSchema = z.object({
+  slug: z.string().min(3).max(20),
+});
+
+export type RedirectParams = z.infer<typeof redirectParamsSchema>;
