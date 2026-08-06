@@ -20,3 +20,10 @@ export interface UrlRow {
     expires_at: Date | null;
     created_at: Date;
 }
+
+export interface UserRow {
+    id: number;
+    email: string;
+    password_hash: string;
+    created_at: Date;
+}

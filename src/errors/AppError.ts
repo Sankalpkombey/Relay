@@ -26,3 +26,9 @@ export class UrlExpiredError extends AppError {
     }
 }
 
+export class EmailTakenError extends AppError {
+    constructor(public email: string) {
+        super(409, `Email '${email}' is already taken`);
+        this.name = "EmailTakenError";
+    }
+}
