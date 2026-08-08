@@ -25,5 +25,9 @@ export interface UserRow {
     id: number;
     email: string;
     password_hash: string;
+    role: string;
+    reset_token: string | null;
+    reset_token_expires_at: Date | null;
     created_at: Date;
+    updated_at: Date;
 }

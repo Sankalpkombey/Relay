@@ -1,7 +1,10 @@
 import { query, UserRow } from "../db/pool";
-import { RegisterUserInput } from "../schemas/user.schema";
-import { EmailTakenError } from "../errors/AppError";
+import { RegisterUserInput, LoginUserInput } from "../schemas/user.schema";
+import { EmailTakenError, InvalidCredentialsError } from "../errors/AppError";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 
 export async function registerUser(input: RegisterUserInput): Promise<Omit<UserRow, "password_hash">> {
@@ -24,4 +27,26 @@ export async function registerUser(input: RegisterUserInput): Promise<Omit<UserR
 
     const { password_hash, ...safeUser } = row;
     return safeUser;
+}
+
+export async function loginUser(input: LoginUserInput): Promise<{ token: string; user: Omit<UserRow, "password_hash"> }> {
+    const result = await query<UserRow>("SELECT * FROM users WHERE email = $1", [input.email]);
+    const user = result.rows[0];
+    if (!user) {
+        throw new InvalidCredentialsError();
+    }
+
+    const isMatch = await bcrypt.compare(input.password, user.password_hash);
+    if (!isMatch) {
+        throw new InvalidCredentialsError();
+    }
+
+    const token = jwt.sign(
+        { userId: user.id, role: user.role },
+        JWT_SECRET!,
+        { expiresIn: "15m" }
+    )
+
+    const { password_hash, ...safeUser } = user;
+    return { token, user: safeUser };
 }

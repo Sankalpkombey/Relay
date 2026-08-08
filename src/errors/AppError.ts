@@ -32,3 +32,10 @@ export class EmailTakenError extends AppError {
         this.name = "EmailTakenError";
     }
 }
+
+export class InvalidCredentialsError extends AppError {
+    constructor() {
+        super(401, "Invalid email or password");
+        this.name = "InvalidCredentialsError";
+    }
+}
