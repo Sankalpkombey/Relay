@@ -39,3 +39,10 @@ export class InvalidCredentialsError extends AppError {
         this.name = "InvalidCredentialsError";
     }
 }
+
+export class UnauthorizedError extends AppError {
+    constructor() {
+        super(401, "Unauthorized");
+        this.name = "UnauthorizedError";
+    }
+}
